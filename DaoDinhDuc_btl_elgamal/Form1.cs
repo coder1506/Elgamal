@@ -53,17 +53,17 @@ namespace DaoDinhDuc_btl_elgamal
 			a = x = d = k = 0;
 			Random random = new Random();
 			do
-			{  //chọn ngẫu nhiên số alpha thoả mã lớn hơn 0 và nhỏ hơn p và là số nguyên tố cùng nhau với p
-				a = (long)random.Next(1, (int)p - 1);
+			{  //chọn ngẫu nhiên số alpha thoả mã lớn hoặc bằng hơn 2 và nhỏ hơn p và là số nguyên tố cùng nhau với p
+				a = (long)random.Next(2, (int)p - 1);
 			}
 			while (!GCDLa1((long)a, (long)p));
-			//chọn ngẫu nhiên khoá bí mật x thoả mã lớn hơn hoặc bằng 0 vào nhỏ hơn p - 1
-			x = (long)random.Next(0, (int)p - 2);
+			//chọn ngẫu nhiên khoá bí mật x thoả mã lớn hơn hoặc bằng 2 vào nhỏ hơn p - 1
+			x = (long)random.Next(2, (int)p - 2);
 			// d được tình bằn công thức d= a^x mod P
 			d = Modulo(a, x, p);
 			do
-			{  //chọn ngẫu nhiên khoá k thoả mã lớn hoặc bằng 0 vào nhỏ hơn hoặc bằng p - 1 và là số nguyên tố cùng nhau với p - 1
-				k = (long)random.Next(0, (int)p - 1);
+			{  //chọn ngẫu nhiên khoá k thoả mã lớn hoặc bằng 2 vào nhỏ hơn hoặc bằng p - 1 và là số nguyên tố cùng nhau với p - 1
+				k = (long)random.Next(2, (int)p - 1);
 			} while (!GCDLa1((long)k, (long)p - 1));
 
 			// Tính Y = A^k mod p - Khóa công khai
@@ -74,12 +74,13 @@ namespace DaoDinhDuc_btl_elgamal
 		private bool CheckKey()
         {
 			var pCheck = long.Parse(ptxt.Text);
+			if (pCheck < 5) return false;
 			var aCheck = long.Parse(atxt.Text);
 			var xCheck = long.Parse(xtxt.Text);
 			var kCheck = long.Parse(ktxt.Text);
-			if ((aCheck > pCheck - 1 && aCheck < 1) || !GCDLa1(aCheck,pCheck)) return false;
-			if (xCheck > pCheck - 2 && xCheck < 0) return false;
-			if ((kCheck > pCheck - 2 && kCheck < 0) || !GCDLa1(kCheck, pCheck - 1)) return false;
+			if ((aCheck > pCheck - 1 || aCheck < 2) || !GCDLa1(aCheck,pCheck)) return false;
+			if (xCheck > pCheck - 2 || xCheck < 2) return false;
+			if ((kCheck > pCheck - 2 || kCheck < 2) || !GCDLa1(kCheck, pCheck - 1)) return false;
 			if (Modulo(aCheck, xCheck, pCheck) != long.Parse(dtxt.Text)) return false;
 			if (Modulo(aCheck, kCheck, pCheck) != long.Parse(ytxt.Text)) return false;
 			return true;
@@ -179,11 +180,12 @@ namespace DaoDinhDuc_btl_elgamal
         private void resetBtn_Click(object sender, EventArgs e)
         {
             resetData();
+			HasKeyAuto = false;
 			EnableField();
         }
 
 		/// <summary>
-		/// chọn một số ngẫu nhiên từ 1000 đến 30000
+		/// chọn một số ngẫu nhiên từ 5 đến 100000
 		/// </summary>
 		/// <returns>1 số</returns>
 		private long SoNgauNhien()
@@ -191,7 +193,7 @@ namespace DaoDinhDuc_btl_elgamal
 			//khởi tạo đối tượng random
 			Random random = new Random();
 			//chọn 1 số ngẫu nhiên
-			long randomNumber = (long)random.Next(3,100000);
+			long randomNumber = (long)random.Next(5, 100000);
 			return randomNumber;
 		}
 		/// <summary>
